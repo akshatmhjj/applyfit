@@ -51,8 +51,16 @@ export function valueFor(key: FieldKey, profile: Profile): string | null {
         return contact.email ?? null;
       case "phone":
         return contact.phone ?? null;
+      case "addressLine1":
+        return contact.addressLine1 ?? null;
       case "city":
         return contact.city ?? null;
+      case "region":
+        return contact.region ?? null;
+      case "postalCode":
+        return contact.postalCode ?? null;
+      case "country":
+        return contact.country ?? null;
       case "linkedin":
         return contact.linkedin ?? null;
       case "github":

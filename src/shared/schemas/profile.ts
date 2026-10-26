@@ -18,7 +18,12 @@ export const ProfileSchema = z
       name: Text(120).optional(),
       email: Text(254).optional(),
       phone: Text(40).optional(),
+      // Address details are contact details: they are scrubbed from every model request.
+      addressLine1: Text(200).optional(),
       city: Text(120).optional(),
+      region: Text(120).optional(),
+      postalCode: Text(20).optional(),
+      country: Text(120).optional(),
       linkedin: Text(300).optional(),
       github: Text(300).optional(),
       portfolio: Text(300).optional(),

@@ -25,7 +25,9 @@ export type LogCode =
   | "autofill.changed_page"
   | "resume.checklist"
   | "resume.suggestions"
-  | "resume.copied";
+  | "resume.copied"
+  | "resume.saved"
+  | "resume.removed";
 
 export function logEvent(code: LogCode, counts: Record<string, number> = {}): void {
   console.info(JSON.stringify({ code, counts }));

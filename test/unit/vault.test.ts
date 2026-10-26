@@ -10,6 +10,7 @@ const SECRET_KEY = "sk-test-SECRET-VALUE-do-not-store-plaintext";
 const sampleData: VaultData = {
   profile: null,
   apiKey: SECRET_KEY,
+  resume: null,
 };
 
 async function createdVault(store = new MemoryStore()): Promise<{ store: MemoryStore; vault: Vault }> {
@@ -41,7 +42,7 @@ describe("vault round trip", () => {
   it("writes new data and reads it back after unlock", async () => {
     const { store, vault } = await createdVault();
     await vault.unlock(PASSPHRASE);
-    await vault.write({ profile: null, apiKey: "sk-other-key-value-123" });
+    await vault.write({ ...EMPTY_VAULT_DATA, apiKey: "sk-other-key-value-123" });
     vault.lock();
 
     const reopened = new Vault(store);

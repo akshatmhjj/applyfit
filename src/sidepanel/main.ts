@@ -9,6 +9,7 @@ import { Vault, VaultError } from "../shared/vault/vault";
 import { onAnalyzeClick } from "./analyze";
 import { onAutofillCancel, onAutofillFill, onAutofillScan } from "./autofill";
 import { onAiSuggestions, onBuildChecklist, onCopyPrompt } from "./resume";
+import { onContactSubmit, onResumeRemove, onResumeSave, showContact, showResume } from "./profileForms";
 
 const VIEWS = ["view-no-vault", "view-unlock", "view-profile"];
 const MINUTE_MS = 60_000;
@@ -39,6 +40,8 @@ function startAutoLock(minutes: number): void {
 
 function openProfile(): void {
   const data = vault.read();
+  showContact(data.profile);
+  showResume(data.resume);
   byId<HTMLTextAreaElement>("profile-json").value = JSON.stringify(
     data.profile ?? BLANK_PROFILE,
     null,
@@ -109,6 +112,7 @@ byId("save-profile").addEventListener("click", async () => {
       profile.projects.reduce((n, p) => n + p.bullets.length, 0);
     logEvent("profile.saved", { skills: profile.skills.length, bullets });
     setText("profile-message", "Saved.");
+    showContact(profile);
   } catch (error) {
     if (error instanceof VaultError && (error.code === "DECRYPT_FAILED" || error.code === "LOCKED")) {
       lockNow("The vault changed in another window. Unlock again.");
@@ -141,7 +145,7 @@ byId("autofill-scan").addEventListener("click", () => {
 
 byId("autofill-fill").addEventListener("click", () => {
   autoLock?.touch();
-  void onAutofillFill();
+  void onAutofillFill(vault);
 });
 
 byId("autofill-cancel").addEventListener("click", () => onAutofillCancel());
@@ -163,6 +167,22 @@ byId("resume-ai").addEventListener("click", () => {
   if (settings === null || !vault.isUnlocked) return;
   autoLock?.touch();
   void onAiSuggestions(vault, settings);
+});
+
+byId<HTMLFormElement>("contact-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  autoLock?.touch();
+  void onContactSubmit(vault);
+});
+
+byId("resume-save").addEventListener("click", () => {
+  autoLock?.touch();
+  void onResumeSave(vault);
+});
+
+byId("resume-remove").addEventListener("click", () => {
+  autoLock?.touch();
+  void onResumeRemove(vault);
 });
 
 watchActivity(() => autoLock?.touch());

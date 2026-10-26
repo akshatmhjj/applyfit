@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>My Information</title>
+  </head>
+  <body>
+    <form id="wd" action="https://example.invalid/workday-step" method="post">
+      <div data-automation-id="legalNameSection">
+        <label for="wd-first">First Name</label>
+        <input id="wd-first" data-automation-id="legalNameSection_firstName" type="text" />
+        <input data-automation-id="legalNameSection_lastName" type="text" />
+      </div>
+
+      <div data-automation-id="addressSection">
+        <input data-automation-id="addressSection_addressLine1" type="text" />
+        <input data-automation-id="addressSection_addressLine2" type="text" />
+        <input data-automation-id="addressSection_city" type="text" />
+        <select data-automation-id="addressSection_countryRegion">
+          <option value="">Select one</option>
+          <option value="de">Germany</option>
+          <option value="us">United States of America</option>
+        </select>
+        <input data-automation-id="addressSection_region" type="text" />
+        <input data-automation-id="addressSection_postalCode" type="text" />
+      </div>
+
+      <input data-automation-id="email" type="text" />
+      <input data-automation-id="phone-number" type="tel" />
+
+      <input data-automation-id="sponsorship" type="text" placeholder="Do you require sponsorship?" />
+      <input data-automation-id="ssnSection" type="text" placeholder="Social Security Number" />
+
+      <button type="submit" data-automation-id="bottom-navigation-next-button">Save and Continue</button>
+    </form>
+  </body>
+</html>

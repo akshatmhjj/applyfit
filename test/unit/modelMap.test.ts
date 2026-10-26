@@ -14,6 +14,7 @@ function unclear(index: number, label: string): FieldDescriptor {
     name: `field_${index}`,
     id: "",
     autocomplete: "",
+    automationId: "",
     placeholder: "",
     ariaLabel: "",
     label,

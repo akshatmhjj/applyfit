@@ -10,6 +10,8 @@ export interface FieldDescriptor {
   name: string;
   id: string;
   autocomplete: string;
+  // data-automation-id, used by Workday and similar sites in place of ids.
+  automationId: string;
   placeholder: string;
   ariaLabel: string;
   label: string;
@@ -58,6 +60,7 @@ export function describeField(el: HTMLElement, index: number, doc: Document): Fi
     name: clip(control.getAttribute("name") ?? "", MAX_TEXT),
     id: clip(control.id, MAX_TEXT),
     autocomplete: clip(control.getAttribute("autocomplete") ?? "", MAX_TEXT),
+    automationId: clip(control.getAttribute("data-automation-id") ?? "", MAX_TEXT),
     placeholder: clip(control.getAttribute("placeholder") ?? "", MAX_TEXT),
     ariaLabel: clip(control.getAttribute("aria-label") ?? "", MAX_TEXT),
     label: clip(labelText(el, doc), MAX_TEXT),
@@ -81,6 +84,7 @@ export function fingerprintOf(fields: FieldDescriptor[]): string {
     name: field.name,
     id: field.id,
     autocomplete: field.autocomplete,
+    automationId: field.automationId,
     placeholder: field.placeholder,
     ariaLabel: field.ariaLabel,
     label: field.label,

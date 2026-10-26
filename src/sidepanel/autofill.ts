@@ -10,13 +10,11 @@ import { ensureProviderHost } from "../shared/providers/permission";
 import type { Profile } from "../shared/schemas/profile";
 import type { Settings } from "../shared/settings";
 import { byId, setText } from "../shared/ui/dom";
-import { toBase64 } from "../shared/vault/crypto";
 import type { Vault } from "../shared/vault/vault";
 
 const SCAN_FILE = "content/scanFields.js";
 const FILL_FILE = "content/fillFields.js";
 const REQUEST_TIMEOUT_MS = 45_000;
-const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 
 interface ScanResult {
   fingerprint: string;
@@ -147,6 +145,12 @@ function renderPreview(tabId: number, fingerprint: string, rows: PlanRow[]): voi
   }
 
   pending = { tabId, fingerprint, rows, checkboxes };
+  setText(
+    "autofill-resume-note",
+    rows.some((row) => row.key === "resume")
+      ? "This form has a resume upload. Your default resume will be attached if you keep its row checked."
+      : "",
+  );
   byId("autofill-preview").hidden = false;
   const fills = rows.filter((row) => row.status === "fill").length;
   setStatus(`Found ${rows.length} fields. ${fills} can be filled. Check the ones you want, then fill.`);
@@ -154,7 +158,8 @@ function renderPreview(tabId: number, fingerprint: string, rows: PlanRow[]): voi
 }
 
 // Called by the Fill button. Writes only the checked fields and never submits.
-export async function onAutofillFill(): Promise<void> {
+// The resume is the default one stored in the vault.
+export async function onAutofillFill(vault: Vault): Promise<void> {
   if (pending === null) {
     setStatus("Scan the form first.");
     return;
@@ -170,20 +175,16 @@ export async function onAutofillFill(): Promise<void> {
   const resumeRow = selected.find((row) => row.key === "resume");
   let resume: FillPayload["resume"];
   if (resumeRow !== undefined) {
-    const file = byId<HTMLInputElement>("resume-file").files?.[0];
-    if (file === undefined) {
-      setStatus("Choose a resume PDF, or uncheck the resume row.");
-      return;
-    }
-    if (file.size > MAX_RESUME_BYTES) {
-      setStatus("That file is larger than 5 MB. Choose a smaller PDF.");
+    const stored = vault.read().resume;
+    if (stored === null) {
+      setStatus("No default resume yet. Save one in Your details, or uncheck the resume row.");
       return;
     }
     resume = {
       index: resumeRow.index,
-      name: file.name,
-      mimeType: file.type || "application/pdf",
-      base64: toBase64(new Uint8Array(await file.arrayBuffer())),
+      name: stored.name,
+      mimeType: stored.mimeType,
+      base64: stored.base64,
     };
   }
 

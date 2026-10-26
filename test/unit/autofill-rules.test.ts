@@ -10,6 +10,7 @@ function field(overrides: Partial<FieldDescriptor>): FieldDescriptor {
     name: "",
     id: "",
     autocomplete: "",
+    automationId: "",
     placeholder: "",
     ariaLabel: "",
     label: "",

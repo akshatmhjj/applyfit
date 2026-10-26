@@ -30,10 +30,10 @@ Then load the extension:
 
 1. **Create a vault passphrase** in Settings. Use at least 12 characters. If you forget it, your data cannot be recovered.
 2. **Choose a provider and paste its API key** in Settings. Gemini is the default. Keys are stored encrypted, and are not shown again after you save them.
-3. **Edit your profile** in the side panel as JSON. Start from [profile.example.json](profile.example.json), which uses fake data. Save to store the profile encrypted.
-4. **Open a job posting** in the active tab, open the side panel, and click **Analyze this job**.
+3. **Enter your details once** in the side panel: name, email, phone, address, and links. Then **save your default resume** (a PDF). Both are stored encrypted, and they are there the next time you unlock. Replace the resume or change any detail whenever you need to. Experience, projects, and education are edited as JSON under **Edit the full profile**; start from [profile.example.json](profile.example.json), which uses fake data.
+4. **Analyze a job.** Open a job posting in the active tab, open the side panel, and click **Analyze this job**. Check the summary, then click **Send**. The result shows the verdict (Apply, Apply with tailored resume, or Skip), your matched skills and gaps, and any hard stops such as a visa or location mismatch.
+5. **Autofill a form.** Open the application page in the active tab, open the side panel, and click **Scan this form**. Check the fields you want, and click **Fill checked fields**. Your default resume is attached where the form asks for one. Nothing is submitted: use the page's own submit button yourself. Multi-page forms need a scan on each page.
 6. **Resume help.** Click **Build checklist for this job** to see which skills to lead with and which bullets to move up. Click **Get AI suggestions** for reworded bullets (optional). Or click **Copy prompt for Claude**, paste it into a Claude chat, and add your own contact header to the result. The extension never rewrites your resume.
-5. **Autofill a form.** Open the application page in the active tab, open the side panel, and click **Scan this form**. Check the fields you want, choose your resume PDF if the form asks for one, and click **Fill checked fields**. Nothing is submitted. Use the page's own submit button yourself. Check the summary, then click **Send**. The result shows the verdict (Apply, Apply with tailored resume, or Skip), your matched skills and gaps, and any hard stops such as a visa or location mismatch.
 
 The vault locks when you click **Lock now**, after the auto-lock timeout (15 minutes by default), and when the side panel closes.
 

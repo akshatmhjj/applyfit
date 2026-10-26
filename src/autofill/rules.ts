@@ -7,7 +7,11 @@ export const FILLABLE_KEYS = [
   "lastName",
   "email",
   "phone",
+  "addressLine1",
   "city",
+  "region",
+  "postalCode",
+  "country",
   "linkedin",
   "github",
   "portfolio",
@@ -31,8 +35,10 @@ export type Classification =
 export type NeverReason = "password" | "payment" | "government-id" | "security-question" | "file";
 
 // Whole-field text: every label-like attribute, lowercased, with separators flattened.
+// data-automation-id is included because Workday and similar sites label fields only with it,
+// for example "legalNameSection_firstName" and "addressSection_postalCode".
 function textOf(field: FieldDescriptor): string {
-  return [field.name, field.id, field.autocomplete, field.placeholder, field.ariaLabel, field.label]
+  return [field.name, field.id, field.autocomplete, field.automationId, field.placeholder, field.ariaLabel, field.label]
     .join(" ")
     .toLowerCase()
     .replace(/[_\-.[\]]+/g, " ");
@@ -47,27 +53,50 @@ const SELF_IDENTIFICATION = /\bgender\b|\brace\b|ethnic|veteran|disabilit|sexual
 const LEGAL_ATTESTATION = /authori[sz]ed to work|work authori[sz]ation|right to work|eligible to work|employment eligibility|\bvisa\b|sponsor|criminal|convicted|felony|background check|legally/;
 
 // Words that mean the field is about the employer, a reference, or a different person.
-// They block the generic keys (name, city, school, and so on), but not the specific ones
-// such as github, where "GitHub username" is exactly the right field.
-const NOT_CANDIDATE = /company|employer|employment|previous|organi[sz]ation|username|user name|nickname|reference|hiring|manager|project|\bfile\b/;
-const GENERIC_KEYS = new Set<FieldKey>(["name", "firstName", "lastName", "city", "school", "degree", "field"]);
+// They block the generic keys (name, city, school, address, and so on), but not the specific
+// ones such as github, where "GitHub username" is exactly the right field.
+const NOT_CANDIDATE = /company|employer|employment|previous|organi[sz]ation|username|user name|nickname|reference|hiring|manager|project|\bfile\b|\bip\b|\bmac\b/;
+const GENERIC_KEYS = new Set<FieldKey>([
+  "name",
+  "firstName",
+  "lastName",
+  "addressLine1",
+  "city",
+  "region",
+  "postalCode",
+  "country",
+  "school",
+  "degree",
+  "field",
+]);
+
+// "Address line 2", "apartment", and "suite" are not the main street address.
+const ADDRESS_LINE_2 = /address ?line ?(2|two)|address ?2\b|apartment|\bapt\b|\bsuite\b|\bunit\b/;
 
 interface KeyRule {
   key: Exclude<FieldKey, "resume">;
   pattern: RegExp;
+  // Optional guard: the rule applies only when this does not match.
+  unless?: RegExp;
 }
 
-// Checked in order. firstName and lastName come before name, so "first name" is never
-// mistaken for a full-name field.
+// Checked in order. Specific keys come first. firstName and lastName come before name, so
+// "first name" is never mistaken for a full-name field. Patterns allow an optional space,
+// because Workday-style ids join words ("firstname", "postalcode").
 const KEY_RULES: KeyRule[] = [
   { key: "email", pattern: /\be mail\b|\bemail\b/ },
   { key: "phone", pattern: /\bphone\b|\bmobile\b|\btelephone\b|\btel\b/ },
   { key: "linkedin", pattern: /linkedin/ },
   { key: "github", pattern: /github/ },
   { key: "portfolio", pattern: /portfolio|personal website|personal site|\bwebsite\b/ },
-  { key: "firstName", pattern: /first name|given name|\bfname\b|forename/ },
-  { key: "lastName", pattern: /last name|family name|surname|\blname\b/ },
+  { key: "firstName", pattern: /first ?name|given ?name|\bfname\b|forename/ },
+  { key: "lastName", pattern: /last ?name|family ?name|surname|\blname\b/ },
   { key: "name", pattern: /\bfull name\b|\byour name\b|\bname\b/ },
+  // No word boundary: Workday joins words ("addressSection_countryRegion").
+  { key: "country", pattern: /country/ },
+  { key: "postalCode", pattern: /postal ?code|zip ?code|\bzip\b|post ?code/ },
+  { key: "region", pattern: /region|\bstate\b|province|\bcounty\b/ },
+  { key: "addressLine1", pattern: /\baddress\b|address ?line ?(1|one)|street|address ?1\b/, unless: ADDRESS_LINE_2 },
   { key: "city", pattern: /\bcity\b|\btown\b/ },
   { key: "school", pattern: /\bschool\b|\buniversity\b|\bcollege\b|\binstitution\b/ },
   { key: "degree", pattern: /\bdegree\b/ },
@@ -96,6 +125,7 @@ export function classify(field: FieldDescriptor): Classification {
 
   for (const rule of KEY_RULES) {
     if (GENERIC_KEYS.has(rule.key) && NOT_CANDIDATE.test(text)) continue;
+    if (rule.unless?.test(text)) continue;
     if (rule.pattern.test(text)) return { kind: "fill", key: rule.key };
   }
   return { kind: "unclear" };
@@ -113,8 +143,18 @@ function keyFromAutocomplete(value: string): FieldKey | null {
       return "lastName";
     case "name":
       return "name";
+    case "street-address":
+    case "address-line1":
+      return "addressLine1";
     case "address-level2":
       return "city";
+    case "address-level1":
+      return "region";
+    case "postal-code":
+      return "postalCode";
+    case "country":
+    case "country-name":
+      return "country";
     default:
       return null;
   }
