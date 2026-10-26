@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "contact": {
+    "name": "Alex Example",
+    "email": "alex@example.com",
+    "phone": "+1 555 0100",
+    "city": "Springfield",
+    "linkedin": "https://www.linkedin.com/in/alex-example",
+    "github": "https://github.com/alex-example",
+    "portfolio": "https://alex.example.com"
+  },
+  "preferences": {
+    "locations": ["Springfield", "Remote"],
+    "remoteOk": true,
+    "needsVisaSponsorship": false
+  },
+  "skills": [
+    { "id": "skill-ts", "name": "TypeScript", "years": 4 },
+    { "id": "skill-react", "name": "React", "years": 3 },
+    { "id": "skill-sql", "name": "PostgreSQL", "years": 5 }
+  ],
+  "experience": [
+    {
+      "id": "exp-acme",
+      "company": "Acme Example Inc.",
+      "title": "Software Engineer",
+      "start": "2021-06",
+      "end": "2024-03",
+      "bullets": [
+        { "id": "exp-acme-b1", "text": "Built a checkout service in TypeScript used by 40 merchants." },
+        { "id": "exp-acme-b2", "text": "Reduced p95 query latency on the orders database by 30%." }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-example",
+      "name": "Example Open Source Tool",
+      "url": "https://github.com/alex-example/tool",
+      "bullets": [
+        { "id": "proj-example-b1", "text": "Wrote a CLI for validating CSV exports, with 200 stars." }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-example",
+      "school": "Example State University",
+      "degree": "B.Sc.",
+      "field": "Computer Science",
+      "year": "2021"
+    }
+  ]
+}

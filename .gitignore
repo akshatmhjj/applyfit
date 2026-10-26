@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+
+# Personal data and secrets must never be committed.
+profile.json
+.env*
+*.pem
+*.key

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Job Fit &amp; Autofill: Settings</title>
+    <link rel="stylesheet" href="../shared/ui/base.css" />
+  </head>
+  <body>
+    <h1>Job Fit &amp; Autofill: Settings</h1>
+
+    <h2>Vault passphrase</h2>
+    <p class="warning">
+      Your profile and API key are encrypted with this passphrase. If you forget it, your
+      data cannot be recovered. There is no reset.
+    </p>
+
+    <section id="vault-setup" hidden>
+      <form id="setup-form">
+        <label for="setup-passphrase">New passphrase (at least 12 characters)</label>
+        <input id="setup-passphrase" type="password" autocomplete="new-password" required minlength="12" />
+        <label for="setup-confirm">Confirm passphrase</label>
+        <input id="setup-confirm" type="password" autocomplete="new-password" required minlength="12" />
+        <label class="check">
+          <input id="setup-understand" type="checkbox" required />
+          I understand a forgotten passphrase cannot be recovered.
+        </label>
+        <button type="submit">Create vault</button>
+      </form>
+    </section>
+
+    <section id="vault-unlock" hidden>
+      <form id="unlock-form">
+        <label for="unlock-passphrase">Passphrase</label>
+        <input id="unlock-passphrase" type="password" autocomplete="off" required />
+        <button type="submit">Unlock</button>
+      </form>
+    </section>
+
+    <section id="vault-unlocked" hidden>
+      <p id="unlock-state" class="muted"></p>
+      <div class="row">
+        <button id="lock-now" type="button" class="secondary">Lock now</button>
+      </div>
+      <form id="passphrase-form">
+        <label for="new-passphrase">New passphrase (at least 12 characters)</label>
+        <input id="new-passphrase" type="password" autocomplete="new-password" required minlength="12" />
+        <label for="new-passphrase-confirm">Confirm new passphrase</label>
+        <input id="new-passphrase-confirm" type="password" autocomplete="new-password" required minlength="12" />
+        <button type="submit" class="secondary">Change passphrase</button>
+      </form>
+    </section>
+
+    <p id="vault-message" class="status" role="status"></p>
+
+    <h2>Provider</h2>
+    <p class="warning">
+      When you run Analyze or Autofill, job text and selected profile data are sent to the
+      provider you choose here. Nothing is sent until you click.
+    </p>
+    <form id="settings-form">
+      <label for="provider">Provider</label>
+      <select id="provider">
+        <option value="anthropic">Anthropic</option>
+      </select>
+      <label for="model">Model name</label>
+      <input id="model" type="text" required maxlength="100" />
+      <label for="auto-lock-minutes">Auto-lock after this many minutes of inactivity</label>
+      <input id="auto-lock-minutes" type="number" min="1" max="240" step="1" required />
+      <label class="check">
+        <input id="model-assisted" type="checkbox" />
+        Allow field labels (never profile values) to be sent to the provider to help autofill.
+        Off by default.
+      </label>
+      <button type="submit">Save settings</button>
+    </form>
+    <p id="settings-message" class="status" role="status"></p>
+
+    <h2>API key</h2>
+    <fieldset id="apikey-fields" disabled>
+      <form id="apikey-form">
+        <label for="api-key">Provider API key</label>
+        <input id="api-key" type="password" autocomplete="off" spellcheck="false" maxlength="512" />
+        <div class="row">
+          <button type="submit">Save key</button>
+          <button id="remove-key" type="button" class="secondary">Remove key</button>
+        </div>
+      </form>
+      <p id="apikey-status" class="status"></p>
+    </fieldset>
+    <p id="apikey-message" class="status" role="status"></p>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

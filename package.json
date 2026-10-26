@@ -1,0 +1,39 @@
+{
+  "name": "applyfit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome extension that scores job fit and autofills application forms from a local, encrypted profile.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akshatmhjj/applyfit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/akshatmhjj/applyfit/issues"
+  },
+  "homepage": "https://github.com/akshatmhjj/applyfit#readme",
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "audit": "npm audit --audit-level=high",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build && npm run check:bundle"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/chrome": "0.3.4",
+    "@types/node": "24.19.2",
+    "esbuild": "0.28.2",
+    "eslint": "10.13.0",
+    "globals": "17.13.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.0",
+    "vitest": "5.0.5"
+  }
+}

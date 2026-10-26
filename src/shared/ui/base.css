@@ -1,0 +1,158 @@
+/* Shared styles for the extension's own pages. Colors are tokens on :root and
+   switch with the system theme. No remote fonts. */
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #1b1f24;
+  --muted: #5b6470;
+  --accent: #1d5fd1;
+  --accent-fg: #ffffff;
+  --border: #c9ced6;
+  --danger: #b42318;
+  --field-bg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14171c;
+    --fg: #e6e9ee;
+    --muted: #9aa4b2;
+    --accent: #6aa2ff;
+    --accent-fg: #0b1220;
+    --border: #3a414c;
+    --danger: #ff8a80;
+    --field-bg: #1d222a;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #14171c;
+  --fg: #e6e9ee;
+  --muted: #9aa4b2;
+  --accent: #6aa2ff;
+  --accent-fg: #0b1220;
+  --border: #3a414c;
+  --danger: #ff8a80;
+  --field-bg: #1d222a;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1 {
+  font-size: 18px;
+  margin: 0 0 12px;
+}
+
+h2 {
+  font-size: 15px;
+  margin: 20px 0 8px;
+}
+
+p {
+  margin: 8px 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+form,
+section > fieldset {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+label {
+  font-weight: 600;
+}
+
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--field-bg);
+  color: var(--fg);
+  font: inherit;
+}
+
+textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  min-height: 320px;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 6px;
+}
+
+.check {
+  font-weight: normal;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+button {
+  padding: 8px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  justify-self: start;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.status {
+  min-height: 1.45em;
+  color: var(--muted);
+}
+
+.errors {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--danger);
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.warning {
+  border-left: 3px solid var(--danger);
+  padding: 4px 8px;
+}

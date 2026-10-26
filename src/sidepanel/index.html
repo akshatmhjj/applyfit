@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Job Fit &amp; Autofill</title>
+    <link rel="stylesheet" href="../shared/ui/base.css" />
+  </head>
+  <body>
+    <h1>Job Fit &amp; Autofill <span id="lock-state" class="muted"></span></h1>
+
+    <section id="view-no-vault" hidden>
+      <p>No profile vault yet. Create one in settings.</p>
+      <button id="open-options" type="button">Open settings</button>
+    </section>
+
+    <section id="view-unlock" hidden>
+      <form id="unlock-form">
+        <label for="unlock-passphrase">Passphrase</label>
+        <input id="unlock-passphrase" type="password" autocomplete="off" required />
+        <button type="submit">Unlock</button>
+      </form>
+      <p id="unlock-message" class="status" role="status"></p>
+    </section>
+
+    <section id="view-profile" hidden>
+      <div class="row">
+        <button id="lock-now" type="button" class="secondary">Lock now</button>
+      </div>
+      <label for="profile-json">Profile (JSON)</label>
+      <textarea id="profile-json" spellcheck="false"></textarea>
+      <button id="save-profile" type="button">Save profile</button>
+      <ul id="profile-errors" class="errors"></ul>
+      <p id="profile-message" class="status" role="status"></p>
+    </section>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

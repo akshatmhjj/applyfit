@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Job Fit & Autofill",
+  "version": "0.1.0",
+  "description": "Scores job fit and autofills application forms from a local, encrypted profile. Nothing is submitted automatically.",
+  "permissions": ["activeTab", "scripting", "storage", "sidePanel"],
+  "optional_host_permissions": ["https://api.anthropic.com/*"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "side_panel": {
+    "default_path": "sidepanel/index.html"
+  },
+  "options_ui": {
+    "page": "options/index.html",
+    "open_in_tab": true
+  }
+}
