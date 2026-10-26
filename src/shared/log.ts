@@ -11,7 +11,18 @@ export type LogCode =
   | "profile.invalid"
   | "settings.saved"
   | "apikey.saved"
-  | "apikey.removed";
+  | "apikey.removed"
+  | "analyze.started"
+  | "analyze.declined"
+  | "analyze.blocked"
+  | "analyze.rejected"
+  | "analyze.provider_error"
+  | "analyze.done"
+  | "provider.permission_denied"
+  | "autofill.scanned"
+  | "autofill.model_mapped"
+  | "autofill.filled"
+  | "autofill.changed_page";
 
 export function logEvent(code: LogCode, counts: Record<string, number> = {}): void {
   console.info(JSON.stringify({ code, counts }));

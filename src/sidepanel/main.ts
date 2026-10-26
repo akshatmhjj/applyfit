@@ -1,21 +1,26 @@
 import { AutoLock } from "../shared/autoLock";
-import { loadSettings } from "../shared/settings";
+import { loadSettings, type Settings } from "../shared/settings";
 import { logEvent } from "../shared/log";
 import { BLANK_PROFILE, parseProfileJson } from "../shared/schemas/profile";
 import { ChromeLocalStore } from "../shared/storage/store";
 import { byId, setText, showOnly, watchActivity } from "../shared/ui/dom";
 import { vaultErrorMessage } from "../shared/ui/messages";
 import { Vault, VaultError } from "../shared/vault/vault";
+import { onAnalyzeClick } from "./analyze";
+import { onAutofillCancel, onAutofillFill, onAutofillScan } from "./autofill";
 
 const VIEWS = ["view-no-vault", "view-unlock", "view-profile"];
 const MINUTE_MS = 60_000;
 
-const vault = new Vault(new ChromeLocalStore());
+const store = new ChromeLocalStore();
+const vault = new Vault(store);
 let autoLock: AutoLock | null = null;
+let settings: Settings | null = null;
 
 function lockNow(message: string): void {
   autoLock?.stop();
   autoLock = null;
+  settings = null;
   vault.lock();
   setText("lock-state", "Locked");
   setText("unlock-message", message);
@@ -63,7 +68,8 @@ byId<HTMLFormElement>("unlock-form").addEventListener("submit", async (event) =>
   try {
     await vault.unlock(passphrase);
     logEvent("vault.unlocked");
-    startAutoLock((await loadSettings(new ChromeLocalStore())).autoLockMinutes);
+    settings = await loadSettings(store);
+    startAutoLock(settings.autoLockMinutes);
     setText("unlock-message", "");
     openProfile();
   } catch (error) {
@@ -110,6 +116,34 @@ byId("save-profile").addEventListener("click", async () => {
     setText("profile-message", vaultErrorMessage(error));
   }
 });
+
+byId("analyze").addEventListener("click", () => {
+  // Settings were loaded at unlock. The click handler must start the permission request
+  // immediately, so no await happens before it.
+  if (settings === null || !vault.isUnlocked) {
+    setText("analyze-status", "Unlock the vault first.");
+    return;
+  }
+  autoLock?.touch();
+  void onAnalyzeClick(vault, settings);
+});
+
+byId("autofill-scan").addEventListener("click", () => {
+  // Same rule as Analyze: any permission request comes before the first await.
+  if (settings === null || !vault.isUnlocked) {
+    setText("autofill-status", "Unlock the vault first.");
+    return;
+  }
+  autoLock?.touch();
+  void onAutofillScan(vault, settings);
+});
+
+byId("autofill-fill").addEventListener("click", () => {
+  autoLock?.touch();
+  void onAutofillFill();
+});
+
+byId("autofill-cancel").addEventListener("click", () => onAutofillCancel());
 
 watchActivity(() => autoLock?.touch());
 window.addEventListener("pagehide", () => vault.lock());

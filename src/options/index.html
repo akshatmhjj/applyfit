@@ -61,10 +61,15 @@
     <form id="settings-form">
       <label for="provider">Provider</label>
       <select id="provider">
-        <option value="anthropic">Anthropic</option>
+        <option value="gemini">Google Gemini (free tier available)</option>
+        <option value="anthropic">Anthropic (paid API key)</option>
       </select>
-      <label for="model">Model name</label>
-      <input id="model" type="text" required maxlength="100" />
+      <p id="gemini-warning" class="warning" hidden>
+        Google's free tier may use prompts to improve its products. Job text and your skill names
+        would be part of those prompts. Use a billed Gemini key to avoid that.
+      </p>
+      <label for="model">Model name for this provider</label>
+      <input id="model" type="text" required maxlength="64" />
       <label for="auto-lock-minutes">Auto-lock after this many minutes of inactivity</label>
       <input id="auto-lock-minutes" type="number" min="1" max="240" step="1" required />
       <label class="check">

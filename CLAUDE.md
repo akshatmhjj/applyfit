@@ -50,6 +50,11 @@ npm run check           # lint, typecheck, test, build, and check:bundle togethe
 - `src/shared/vault/`: PBKDF2 and AES-GCM encryption, and the vault that holds the profile and API key.
 - `src/shared/schemas/`: zod schemas. `profile.ts` is the profile schema.
 - `src/shared/`: settings, auto-lock, logging, storage interface, shared UI helpers.
-- `src/sidepanel/` and `src/options/`: the extension pages.
-- `test/unit/`: unit tests. `test/helpers/`: test utilities.
+- `src/sidepanel/` and `src/options/`: the extension pages. `sidepanel/analyze.ts` is the Analyze flow.
+- `src/shared/providers/`: provider adapters (Gemini, Anthropic) and the single `send()` that performs their requests.
+- `src/shared/privacy/outgoing.ts`: scrubs and scans profile text before any send.
+- `src/analysis/`: prompt building, output schemas (strict, zod), deterministic gates, verdict thresholds in `config.ts`, and the pipeline.
+- `src/autofill/`: form scanning (`fields.ts`), the whitelist and deny rules (`rules.ts`), the preview plan (`plan.ts`), the page-side fill (`fill.ts`, the only file that dispatches events), and opt-in label mapping (`modelMap.ts`). `src/content/scanFields.ts` and `fillFields.ts` are their content-script entries.
+- `src/jobs/extract.ts`: reads a job posting from a page (JSON-LD first, visible text otherwise, 15,000-character cap). `src/content/extractJob.ts` is its content-script entry, built as an IIFE.
+- `test/unit/`: unit tests. `test/security/`: injection and no-action tests. `test/fixtures/`: sample pages. `test/helpers/`: test utilities.
 - `scripts/check-bundle.mjs`: post-build check for `eval` and `new Function`.

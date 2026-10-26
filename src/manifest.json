@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "description": "Scores job fit and autofills application forms from a local, encrypted profile. Nothing is submitted automatically.",
   "permissions": ["activeTab", "scripting", "storage", "sidePanel"],
-  "optional_host_permissions": ["https://api.anthropic.com/*"],
+  "optional_host_permissions": [
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.anthropic.com/*"
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   },

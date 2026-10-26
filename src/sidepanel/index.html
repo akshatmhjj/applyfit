@@ -32,6 +32,55 @@
       <button id="save-profile" type="button">Save profile</button>
       <ul id="profile-errors" class="errors"></ul>
       <p id="profile-message" class="status" role="status"></p>
+
+      <h2>Analyze this job</h2>
+      <p class="muted">
+        Open a job posting in the active tab, then click Analyze. You confirm before anything is sent.
+      </p>
+      <button id="analyze" type="button">Analyze this job</button>
+      <p id="analyze-status" class="status" role="status"></p>
+
+      <section id="analyze-confirm" hidden>
+        <p id="confirm-summary"></p>
+        <p id="confirm-free-tier" class="warning" hidden></p>
+        <div class="row">
+          <button id="confirm-send" type="button">Send</button>
+          <button id="confirm-cancel" type="button" class="secondary">Cancel</button>
+        </div>
+      </section>
+
+      <h2>Autofill this form</h2>
+      <p class="muted">
+        Fills the fields on the active tab from your profile. You check each field first.
+        Nothing is submitted.
+      </p>
+      <button id="autofill-scan" type="button">Scan this form</button>
+      <p id="autofill-status" class="status" role="status"></p>
+
+      <section id="autofill-preview" hidden>
+        <ul id="autofill-rows" class="plain"></ul>
+        <label for="resume-file">Resume PDF (used only for this fill, not stored)</label>
+        <input id="resume-file" type="file" accept="application/pdf" />
+        <div class="row">
+          <button id="autofill-fill" type="button">Fill checked fields</button>
+          <button id="autofill-cancel" type="button" class="secondary">Cancel</button>
+        </div>
+      </section>
+      <p id="autofill-result" class="status" role="status"></p>
+
+      <section id="analyze-result" hidden>
+        <h2 id="result-verdict"></h2>
+        <p id="result-job"></p>
+        <p id="result-score"></p>
+        <h3>Matched skills</h3>
+        <ul id="result-matched" class="plain"></ul>
+        <h3>Gaps</h3>
+        <ul id="result-gaps" class="plain"></ul>
+        <h3>Stops and warnings</h3>
+        <ul id="result-gates" class="plain"></ul>
+        <p id="result-reason"></p>
+        <p id="result-summary" class="muted"></p>
+      </section>
     </section>
 
     <script type="module" src="main.js"></script>

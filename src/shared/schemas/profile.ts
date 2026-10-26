@@ -92,6 +92,7 @@ export const ProfileSchema = z
   });
 
 export type Profile = z.infer<typeof ProfileSchema>;
+export type Preferences = Profile["preferences"];
 
 export const BLANK_PROFILE: Profile = {
   version: 1,

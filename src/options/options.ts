@@ -1,6 +1,6 @@
 import { AutoLock } from "../shared/autoLock";
 import { logEvent } from "../shared/log";
-import { loadSettings, SettingsSchema, saveSettings } from "../shared/settings";
+import { loadSettings, SettingsSchema, saveSettings, type ProviderId, type Settings } from "../shared/settings";
 import { ChromeLocalStore } from "../shared/storage/store";
 import { byId, setText, showOnly, watchActivity } from "../shared/ui/dom";
 import { vaultErrorMessage } from "../shared/ui/messages";
@@ -8,9 +8,12 @@ import { Vault } from "../shared/vault/vault";
 import { EMPTY_VAULT_DATA } from "../shared/vault/vaultData";
 
 const MINUTE_MS = 60_000;
+const VAULT_VIEWS = ["vault-setup", "vault-unlock", "vault-unlocked"];
 const store = new ChromeLocalStore();
 const vault = new Vault(store);
 let autoLock: AutoLock | null = null;
+// The settings currently shown. Kept so that switching provider keeps each provider's model.
+let shown: Settings | null = null;
 
 function startAutoLock(minutes: number): void {
   autoLock?.stop();
@@ -29,11 +32,11 @@ function stopAutoLock(): void {
 // Redraws the vault and API-key sections from the vault's current state.
 async function refresh(vaultMessage = ""): Promise<void> {
   if (!(await vault.exists())) {
-    showOnly(["vault-setup", "vault-unlock", "vault-unlocked"], "vault-setup");
+    showOnly(VAULT_VIEWS, "vault-setup");
   } else if (!vault.isUnlocked) {
-    showOnly(["vault-setup", "vault-unlock", "vault-unlocked"], "vault-unlock");
+    showOnly(VAULT_VIEWS, "vault-unlock");
   } else {
-    showOnly(["vault-setup", "vault-unlock", "vault-unlocked"], "vault-unlocked");
+    showOnly(VAULT_VIEWS, "vault-unlocked");
     const minutes = (await loadSettings(store)).autoLockMinutes;
     setText("unlock-state", `Unlocked. Locks after ${minutes} minutes of inactivity.`);
   }
@@ -113,19 +116,38 @@ byId<HTMLFormElement>("passphrase-form").addEventListener("submit", async (event
   }
 });
 
+// Switching provider shows that provider's own model name. Each one keeps its own.
+function showProvider(provider: ProviderId): void {
+  if (shown === null) return;
+  byId<HTMLInputElement>("model").value = shown.models[provider];
+  byId("gemini-warning").hidden = provider !== "gemini";
+}
+
+byId<HTMLSelectElement>("provider").addEventListener("change", (event) => {
+  if (shown === null) return;
+  const from = shown.provider;
+  shown.models[from] = byId<HTMLInputElement>("model").value.trim();
+  shown.provider = (event.target as HTMLSelectElement).value as ProviderId;
+  showProvider(shown.provider);
+});
+
 byId<HTMLFormElement>("settings-form").addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (shown === null) return;
+  const provider = byId<HTMLSelectElement>("provider").value as ProviderId;
+  const models = { ...shown.models, [provider]: byId<HTMLInputElement>("model").value.trim() };
   const parsed = SettingsSchema.safeParse({
-    provider: byId<HTMLSelectElement>("provider").value,
-    model: byId<HTMLInputElement>("model").value.trim(),
+    provider,
+    models,
     autoLockMinutes: Number(byId<HTMLInputElement>("auto-lock-minutes").value),
     modelAssistedAutofill: byId<HTMLInputElement>("model-assisted").checked,
   });
   if (!parsed.success) {
-    setText("settings-message", "Check the values: model name and a timeout of 1 to 240 minutes.");
+    setText("settings-message", "Check the values: model names must be plain names, and the timeout must be 1 to 240 minutes.");
     return;
   }
   await saveSettings(store, parsed.data);
+  shown = parsed.data;
   logEvent("settings.saved");
   setText("settings-message", "Saved.");
   if (vault.isUnlocked) {
@@ -165,11 +187,11 @@ byId("remove-key").addEventListener("click", async () => {
 });
 
 async function loadSettingsForm(): Promise<void> {
-  const settings = await loadSettings(store);
-  byId<HTMLSelectElement>("provider").value = settings.provider;
-  byId<HTMLInputElement>("model").value = settings.model;
-  byId<HTMLInputElement>("auto-lock-minutes").value = String(settings.autoLockMinutes);
-  byId<HTMLInputElement>("model-assisted").checked = settings.modelAssistedAutofill;
+  shown = await loadSettings(store);
+  byId<HTMLSelectElement>("provider").value = shown.provider;
+  showProvider(shown.provider);
+  byId<HTMLInputElement>("auto-lock-minutes").value = String(shown.autoLockMinutes);
+  byId<HTMLInputElement>("model-assisted").checked = shown.modelAssistedAutofill;
 }
 
 watchActivity(() => autoLock?.touch());

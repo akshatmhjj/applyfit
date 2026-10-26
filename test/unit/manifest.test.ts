@@ -20,8 +20,11 @@ describe("manifest security policy", () => {
     expect(serialized).not.toMatch(/"https?:\/\/\*\//);
   });
 
-  it("limits optional host access to the provider(s) the code supports", () => {
-    expect(manifest.optional_host_permissions).toEqual(["https://api.anthropic.com/*"]);
+  it("limits optional host access to the two supported provider APIs", () => {
+    expect(manifest.optional_host_permissions).toEqual([
+      "https://generativelanguage.googleapis.com/*",
+      "https://api.anthropic.com/*",
+    ]);
     expect(manifest).not.toHaveProperty("host_permissions");
   });
 

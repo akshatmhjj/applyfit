@@ -11,6 +11,10 @@ describe("settings", () => {
     expect(await loadSettings(new MemoryStore())).toEqual(DEFAULT_SETTINGS);
   });
 
+  it("defaults to Gemini, the provider the user chose", () => {
+    expect(DEFAULT_SETTINGS.provider).toBe("gemini");
+  });
+
   it("keeps model-assisted autofill off by default (privacy)", () => {
     expect(DEFAULT_SETTINGS.modelAssistedAutofill).toBe(false);
   });
@@ -21,7 +25,12 @@ describe("settings", () => {
 
   it("round-trips saved settings", async () => {
     const store = new MemoryStore();
-    const next = { ...DEFAULT_SETTINGS, autoLockMinutes: 5, model: "claude-haiku-5-5" };
+    const next = {
+      ...DEFAULT_SETTINGS,
+      provider: "anthropic" as const,
+      autoLockMinutes: 5,
+      models: { ...DEFAULT_SETTINGS.models, anthropic: "claude-haiku-5-5" },
+    };
     await saveSettings(store, next);
     expect(await loadSettings(store)).toEqual(next);
   });
@@ -32,9 +41,20 @@ describe("settings", () => {
     expect(await loadSettings(store)).toEqual(DEFAULT_SETTINGS);
   });
 
-  it("refuses to save an out-of-range auto-lock timeout", async () => {
+  it("refuses an out-of-range auto-lock timeout", async () => {
     await expect(
       saveSettings(new MemoryStore(), { ...DEFAULT_SETTINGS, autoLockMinutes: 0 }),
     ).rejects.toThrow();
+  });
+
+  it("refuses model names that could change the request URL", async () => {
+    for (const model of ["gemini-2.5-flash/../../x", "a?key=1", "x y", "", "-leading"]) {
+      await expect(
+        saveSettings(new MemoryStore(), {
+          ...DEFAULT_SETTINGS,
+          models: { ...DEFAULT_SETTINGS.models, gemini: model },
+        }),
+      ).rejects.toThrow();
+    }
   });
 });

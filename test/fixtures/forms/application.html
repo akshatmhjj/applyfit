@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Apply: Backend Engineer</title>
+  </head>
+  <body>
+    <form id="apply" action="https://example.invalid/submit" method="post">
+      <label for="f-first">First name</label>
+      <input id="f-first" name="first_name" type="text" autocomplete="given-name" />
+
+      <label for="f-last">Last name</label>
+      <input id="f-last" name="last_name" type="text" />
+
+      <label>Email <input name="email" type="email" /></label>
+
+      <label for="f-phone">Phone number</label>
+      <input id="f-phone" name="phone" type="tel" />
+
+      <label for="f-city">City</label>
+      <input id="f-city" name="city" type="text" />
+
+      <input name="linkedin" type="url" placeholder="LinkedIn profile URL" />
+      <input name="github" type="url" aria-label="GitHub username or URL" />
+      <input name="website" type="url" placeholder="Portfolio or personal website" />
+
+      <label for="f-school">University</label>
+      <input id="f-school" name="school" type="text" />
+
+      <label for="f-degree">Degree</label>
+      <select id="f-degree" name="degree">
+        <option value="">Select a degree</option>
+        <option value="bsc">B.Sc.</option>
+        <option value="msc">M.Sc.</option>
+      </select>
+
+      <label for="f-company">Current company</label>
+      <input id="f-company" name="company" type="text" />
+
+      <label for="f-prefilled">Phone (already typed)</label>
+      <input id="f-prefilled" name="phone_2" type="tel" value="+1 000 0000" />
+
+      <label for="f-resume">Resume (PDF)</label>
+      <input id="f-resume" name="resume" type="file" accept="application/pdf" />
+
+      <label for="f-cover">Cover letter</label>
+      <textarea id="f-cover" name="cover_letter"></textarea>
+
+      <!-- Must never be filled -->
+      <label for="f-password">Create a password</label>
+      <input id="f-password" name="password" type="password" />
+
+      <label for="f-card">Card number</label>
+      <input id="f-card" name="cc-number" type="text" autocomplete="cc-number" />
+
+      <label for="f-ssn">Social Security Number</label>
+      <input id="f-ssn" name="ssn" type="text" />
+
+      <label for="f-q">What was the name of your first pet? (security question)</label>
+      <input id="f-q" name="security_answer" type="text" />
+
+      <!-- Needs your answer -->
+      <label for="f-gender">Gender</label>
+      <select id="f-gender" name="gender">
+        <option value="">Prefer not to say</option>
+        <option value="f">Female</option>
+        <option value="m">Male</option>
+      </select>
+
+      <label for="f-visa">Will you now or in the future require visa sponsorship?</label>
+      <input id="f-visa" name="visa" type="text" />
+
+      <!-- Hidden and disabled fields are never touched -->
+      <input type="hidden" name="csrf" value="token-123" />
+      <div hidden><input name="hidden_email" type="text" /></div>
+      <input name="locked_name" type="text" disabled />
+
+      <button type="submit" id="submit-btn">Submit application</button>
+    </form>
+  </body>
+</html>
