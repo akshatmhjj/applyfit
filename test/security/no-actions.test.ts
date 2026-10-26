@@ -16,6 +16,7 @@ function sourceFiles(dir: string): string[] {
 const ANALYSIS_CODE = [
   ...sourceFiles("src/analysis"),
   ...sourceFiles("src/jobs"),
+  ...sourceFiles("src/resume"),
   "src/sidepanel/analyze.ts",
 ];
 
@@ -50,6 +51,7 @@ describe("analysis code takes no page action", () => {
       "src/shared/providers/provider.ts",
       "src/sidepanel/analyze.ts",
       "src/sidepanel/autofill.ts",
+      "src/sidepanel/resume.ts",
     ]);
   });
 });

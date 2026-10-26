@@ -8,6 +8,7 @@ import { vaultErrorMessage } from "../shared/ui/messages";
 import { Vault, VaultError } from "../shared/vault/vault";
 import { onAnalyzeClick } from "./analyze";
 import { onAutofillCancel, onAutofillFill, onAutofillScan } from "./autofill";
+import { onAiSuggestions, onBuildChecklist, onCopyPrompt } from "./resume";
 
 const VIEWS = ["view-no-vault", "view-unlock", "view-profile"];
 const MINUTE_MS = 60_000;
@@ -144,6 +145,25 @@ byId("autofill-fill").addEventListener("click", () => {
 });
 
 byId("autofill-cancel").addEventListener("click", () => onAutofillCancel());
+
+byId("resume-checklist").addEventListener("click", () => {
+  if (!vault.isUnlocked) return;
+  autoLock?.touch();
+  void onBuildChecklist(vault);
+});
+
+byId("resume-copy").addEventListener("click", () => {
+  if (!vault.isUnlocked) return;
+  autoLock?.touch();
+  void onCopyPrompt(vault);
+});
+
+byId("resume-ai").addEventListener("click", () => {
+  // Permission request first, inside the click.
+  if (settings === null || !vault.isUnlocked) return;
+  autoLock?.touch();
+  void onAiSuggestions(vault, settings);
+});
 
 watchActivity(() => autoLock?.touch());
 window.addEventListener("pagehide", () => vault.lock());

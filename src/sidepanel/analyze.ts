@@ -9,6 +9,7 @@ import { getProvider } from "../shared/providers/registry";
 import { ensureProviderHost } from "../shared/providers/permission";
 import type { ProviderAdapter } from "../shared/providers/provider";
 import { byId, setText } from "../shared/ui/dom";
+import { askToSend, type ConfirmIds } from "./confirmSend";
 import type { Vault } from "../shared/vault/vault";
 
 const REQUEST_TIMEOUT_MS = 45_000;
@@ -55,7 +56,7 @@ export async function onAnalyzeClick(vault: Vault, settings: Settings): Promise<
     return;
   }
 
-  const confirmed = await askToSend(provider, settings.models[settings.provider], built.sent);
+  const confirmed = await confirmAnalysisSend(provider, settings.models[settings.provider], built.sent);
   if (!confirmed) {
     logEvent("analyze.declined");
     setStatus("Cancelled. Nothing was sent.");
@@ -103,7 +104,7 @@ function readyOrExplain(
 }
 
 // Runs in the active tab's top frame only, and only after the user clicked Analyze.
-async function extractFromActiveTab(): Promise<JobExtraction> {
+export async function extractFromActiveTab(): Promise<JobExtraction> {
   const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
   if (tab?.id === undefined) {
     throw new Error("no active tab");
@@ -122,40 +123,28 @@ async function extractFromActiveTab(): Promise<JobExtraction> {
   return result;
 }
 
-// Shows exactly what will leave the device and waits for an explicit Send or Cancel.
-function askToSend(
+const ANALYZE_CONFIRM: ConfirmIds = {
+  panel: "analyze-confirm",
+  summary: "confirm-summary",
+  warning: "confirm-free-tier",
+  send: "confirm-send",
+  cancel: "confirm-cancel",
+};
+
+function confirmAnalysisSend(
   provider: ProviderAdapter,
   model: string,
   sent: { jobCharacters: number; skills: number; roles: number; bullets: number },
 ): Promise<boolean> {
-  const panel = byId("analyze-confirm");
-  setText(
-    "confirm-summary",
+  const summary =
     `Send to ${provider.label} (model ${model}): ${sent.jobCharacters} characters of job posting text, ` +
-      `${sent.skills} skills, ${sent.roles} roles, and ${sent.bullets} bullet points from your profile. ` +
-      "Contact details are not sent.",
-  );
-  byId("confirm-free-tier").hidden = provider.id !== "gemini";
-  setText(
-    "confirm-free-tier",
-    "Google's free tier may use these prompts to improve its products. Use a billed key to avoid that.",
-  );
-  panel.hidden = false;
-
-  return new Promise((resolve) => {
-    const send = byId("confirm-send");
-    const cancel = byId("confirm-cancel");
-    const finish = (answer: boolean) => {
-      panel.hidden = true;
-      send.removeEventListener("click", onSend);
-      cancel.removeEventListener("click", onCancel);
-      resolve(answer);
-    };
-    const onSend = () => finish(true);
-    const onCancel = () => finish(false);
-    send.addEventListener("click", onSend);
-    cancel.addEventListener("click", onCancel);
-  });
+    `${sent.skills} skills, ${sent.roles} roles, and ${sent.bullets} bullet points from your profile. ` +
+    "Contact details are not sent.";
+  const warning =
+    provider.id === "gemini"
+      ? "Google's free tier may use these prompts to improve its products. Use a billed key to avoid that."
+      : null;
+  return askToSend(ANALYZE_CONFIRM, summary, warning);
 }
 
 function renderOutcome(outcome: AnalysisOutcome): void {

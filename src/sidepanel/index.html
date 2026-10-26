@@ -68,6 +68,33 @@
       </section>
       <p id="autofill-result" class="status" role="status"></p>
 
+      <h2>Resume help</h2>
+      <p class="muted">
+        Suggests what to change in your resume for this job. It does not rewrite your resume, and
+        nothing changes until you change it.
+      </p>
+      <div class="row">
+        <button id="resume-checklist" type="button">Build checklist for this job</button>
+        <button id="resume-copy" type="button" class="secondary" disabled>Copy prompt for Claude</button>
+      </div>
+      <p id="resume-status" class="status" role="status"></p>
+      <h3>Checklist (keyword matching, no AI)</h3>
+      <ul id="resume-checklist-list" class="plain"></ul>
+      <div class="row">
+        <button id="resume-ai" type="button" class="secondary" disabled>Get AI suggestions</button>
+      </div>
+      <section id="resume-confirm" hidden>
+        <p id="resume-confirm-summary"></p>
+        <p id="resume-confirm-warning" class="warning" hidden></p>
+        <div class="row">
+          <button id="resume-send" type="button">Send</button>
+          <button id="resume-cancel" type="button" class="secondary">Cancel</button>
+        </div>
+      </section>
+      <h3>AI suggestions</h3>
+      <ul id="resume-ai-list" class="plain"></ul>
+      <p id="resume-ai-note" class="muted"></p>
+
       <section id="analyze-result" hidden>
         <h2 id="result-verdict"></h2>
         <p id="result-job"></p>

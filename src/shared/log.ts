@@ -22,7 +22,10 @@ export type LogCode =
   | "autofill.scanned"
   | "autofill.model_mapped"
   | "autofill.filled"
-  | "autofill.changed_page";
+  | "autofill.changed_page"
+  | "resume.checklist"
+  | "resume.suggestions"
+  | "resume.copied";
 
 export function logEvent(code: LogCode, counts: Record<string, number> = {}): void {
   console.info(JSON.stringify({ code, counts }));

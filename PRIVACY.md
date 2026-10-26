@@ -45,6 +45,12 @@ The derived encryption key cannot be exported from the browser.
 
 The extension logs only event codes and numeric counts, such as `analyze.started` with `{ "jobChars": 1234, "skills": 3 }`. It never logs profile values, job text, model output, or keys.
 
+## Resume help
+
+- **Checklist:** runs entirely on your device, with no network request. It suggests skills to lead with, bullets to move up, and bullets that may not help this job.
+- **AI suggestions:** only when you click **Get AI suggestions** and then **Send**. The request holds the job text and the ids and text of your bullets and skills. It never holds your contact details, company names, school names, or links. Suggestions are checked before you see them: any that refer to unknown items, or add a number, tool, or name that the original bullet does not contain, are dropped.
+- **Copy prompt for Claude:** copies a prompt to your clipboard only when you click the button. The prompt holds the job text and your resume facts, but not your contact details. The extension does not send it anywhere. You paste it into an AI chat yourself.
+
 ## Autofill
 
 Autofill reads the form on the active tab and writes only the fields you check in the preview. It sends nothing to any provider unless you have turned on model-assisted mapping (off by default).
